@@ -1,0 +1,22 @@
+{
+  "name": "shop-aws-serverless",
+  "version": "1.0.0",
+  "description": "Backend for E-commerce app",
+  "main": "index.js",
+  "scripts": {
+    "test": "y"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elenapetra/cloud-tasks-BE.git"
+  },
+  "keywords": [
+    "y"
+  ],
+  "author": "y",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elenapetra/cloud-tasks-BE/issues"
+  },
+  "homepage": "https://github.com/elenapetra/cloud-tasks-BE#readme"
+}
