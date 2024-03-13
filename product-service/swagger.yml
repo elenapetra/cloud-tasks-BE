@@ -1,0 +1,81 @@
+openapi: 3.0.0
+info:
+  title: Product API
+  version: 1.0.0
+  description: API for managing products
+servers:
+  - url: https://zq3zdypgs7.execute-api.eu-west-1.amazonaws.com/dev
+    description: Main server (production)
+paths:
+  /products:
+    get:
+      summary: Get all products
+      responses:
+        "200":
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+  /products/{productId}:
+    get:
+      summary: Get a single product by ID
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          description: ID of the product to retrieve
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A single product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        default:
+          description: Unexpected error
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  type: string
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        description:
+          type: string
+          description: A short description of the product.
+        id:
+          type: string
+          description: The unique identifier for the product.
+        price:
+          type: number
+          format: float
+          description: The price of the product.
+        title:
+          type: string
+          description: The title of the product.
+      required:
+        - description
+        - id
+        - price
+        - title

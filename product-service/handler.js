@@ -1,7 +1,7 @@
 "use strict";
 const products = require("./src/services/products-data.json");
 
-module.exports.getProductsList = () => {
+module.exports.getProductsList = async () => {
   return {
     statusCode: 200,
     headers: {
@@ -13,7 +13,7 @@ module.exports.getProductsList = () => {
   };
 };
 
-module.exports.getProductById = (event) => {
+module.exports.getProductById = async (event) => {
   const productId = event.pathParameters.productId;
   const product = products.find((p) => p.id.toString() === productId);
 
