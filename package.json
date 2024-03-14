@@ -18,5 +18,9 @@
   "bugs": {
     "url": "https://github.com/elenapetra/cloud-tasks-BE/issues"
   },
-  "homepage": "https://github.com/elenapetra/cloud-tasks-BE#readme"
+  "homepage": "https://github.com/elenapetra/cloud-tasks-BE#readme",
+  "dependencies": {
+    "aws-sdk": "^2.1577.0",
+    "fs": "^0.0.1-security"
+  }
 }
