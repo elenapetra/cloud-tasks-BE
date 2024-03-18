@@ -21,6 +21,8 @@
   "homepage": "https://github.com/elenapetra/cloud-tasks-BE#readme",
   "dependencies": {
     "aws-sdk": "^2.1577.0",
-    "fs": "^0.0.1-security"
+    "crypto": "^1.0.1",
+    "fs": "^0.0.1-security",
+    "uuid": "^9.0.1"
   }
 }

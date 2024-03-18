@@ -22,7 +22,7 @@ frameworkVersion: "3"
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs16.x
   region: eu-west-1
   stage: dev
   iam:
@@ -32,6 +32,7 @@ provider:
           Action:
             - dynamodb:Scan
             - dynamodb:GetItem
+            - dynamodb:PutItem
           Resource:
             - "arn:aws:dynamodb:eu-west-1:533267237683:table/products-db"
             - "arn:aws:dynamodb:eu-west-1:533267237683:table/stocks-db"
@@ -92,6 +93,19 @@ functions:
     environment:
       PRODUCTS_TABLE: "products-db"
       STOCKS_TABLE: "stocks-db"
+  createProduct:
+    handler: handler.createProduct
+    events:
+      - http:
+          path: products
+          method: post
+          request:
+            schemas:
+              application/json: ${file(src/schemas/createProductSchema.json)}
+    environment:
+      PRODUCTS_TABLE: "products-db"
+      STOCKS_TABLE: "stocks-db"
+
   #    The following are a few example events you can configure
   #    NOTE: Please make sure to change your handler code to work with those events
   #    Check the event documentation for details

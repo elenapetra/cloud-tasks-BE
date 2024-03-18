@@ -1,8 +1,7 @@
-const products = require("./src/services/products-data.json");
 const AWS = require("aws-sdk");
+const generateUniqueId = require("./src/utils/generateUniqueId");
 
 AWS.config.update({ region: "eu-west-1" });
-
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.getProductsList = async () => {
@@ -11,27 +10,24 @@ module.exports.getProductsList = async () => {
       TableName: process.env.PRODUCTS_TABLE,
     };
 
-    const productsData = await dynamodb.scan(productsParams).promise();
-
     const stocksParams = {
       TableName: process.env.STOCKS_TABLE,
     };
 
-    const stocksData = await dynamodb.scan(stocksParams).promise();
+    const [productsData, stocksData] = await Promise.all([
+      dynamodb.scan(productsParams).promise(),
+      dynamodb.scan(stocksParams).promise(),
+    ]);
 
     const productsWithStocks = productsData.Items.map((product) => {
-      console.log("product:", product);
-      const stockInfo = stocksData.Items.find((stock) => {
-        console.log("stock: ", stock);
-        return stock.product_id === product.id;
-      });
-
+      const stockInfo = stocksData.Items.find(
+        (item) => item.product_id === product.id
+      );
       return {
         ...product,
-        count: stockInfo.count ? stockInfo.count : 0,
+        count: stockInfo ? stockInfo.count : 0,
       };
     });
-
     return {
       statusCode: 200,
       headers: {
@@ -50,24 +46,15 @@ module.exports.getProductsList = async () => {
 };
 
 module.exports.getProductById = async (event) => {
-  const productId = event.pathParameters.productId;
-
   try {
+    const productId = event.pathParameters.productId;
+
     const productParams = {
       TableName: process.env.PRODUCTS_TABLE,
       Key: {
         id: productId,
       },
     };
-
-    const productData = await dynamodb.get(productParams).promise();
-
-    if (!productData.Item) {
-      return {
-        statusCode: 404,
-        body: JSON.stringify({ message: "Product not found" }),
-      };
-    }
 
     const stockParams = {
       TableName: process.env.STOCKS_TABLE,
@@ -76,7 +63,17 @@ module.exports.getProductById = async (event) => {
       },
     };
 
-    const stockData = await dynamodb.get(stockParams).promise();
+    const [productData, stockData] = await Promise.all([
+      dynamodb.get(productParams).promise(),
+      dynamodb.get(stockParams).promise(),
+    ]);
+
+    if (!productData.Item || !stockData.Item) {
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ message: "Product not found" }),
+      };
+    }
 
     const productWithStock = {
       ...productData.Item,
@@ -91,6 +88,58 @@ module.exports.getProductById = async (event) => {
     return {
       statusCode: 500,
       body: JSON.stringify({ message: "Error fetching product", error }),
+    };
+  }
+};
+
+module.exports.createProduct = async (event) => {
+  try {
+    const data = JSON.parse(event.body);
+    const productId = generateUniqueId();
+
+    const productParams = {
+      TableName: process.env.PRODUCTS_TABLE,
+      Item: {
+        id: productId,
+        title: data.title,
+        description: data.description,
+        price: data.price,
+      },
+    };
+
+    const stockParams = {
+      TableName: process.env.STOCKS_TABLE,
+      Item: {
+        product_id: productId,
+        count: data.count,
+      },
+    };
+
+    await Promise.all([
+      dynamodb.put(productParams).promise(),
+      dynamodb.put(stockParams).promise(),
+    ]);
+
+    const responseData = {
+      data: {
+        id: productId,
+        title: data.title,
+        description: data.description,
+        price: data.price,
+        count: data.count,
+      },
+      message: "Product created successfully",
+      error: null,
+    };
+
+    return {
+      statusCode: 201,
+      body: JSON.stringify(responseData),
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: "Error creating product", error }),
     };
   }
 };

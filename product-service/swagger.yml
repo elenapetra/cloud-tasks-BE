@@ -19,6 +19,48 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Product"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    post:
+      summary: Create a new product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "201":
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
   /products/{productId}:
     get:
       summary: Get a single product by ID
@@ -45,8 +87,15 @@ paths:
                 properties:
                   message:
                     type: string
-        default:
-          description: Unexpected error
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
       requestBody:
         required: false
         content:
@@ -61,21 +110,24 @@ components:
     Product:
       type: object
       properties:
-        description:
-          type: string
-          description: A short description of the product.
         id:
           type: string
           description: The unique identifier for the product.
-        price:
-          type: number
-          format: float
-          description: The price of the product.
         title:
           type: string
           description: The title of the product.
+        description:
+          type: string
+          description: A short description of the product.
+        price:
+          type: integer
+          description: The price of the product.
+        count:
+          type: integer
+          description: The count of the product
       required:
-        - description
         - id
-        - price
         - title
+        - description
+        - price
+        - count
