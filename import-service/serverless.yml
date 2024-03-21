@@ -11,7 +11,7 @@ provider:
     - Effect: Allow
       Action: "s3:*"
       Resource:
-        - "arn:aws:s3:::import-products-data-bucket/uploaded"
+        - "arn:aws:s3:::import-products-data-bucket/uploaded/*"
 
 functions:
   importProductsFile:
