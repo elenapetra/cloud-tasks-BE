@@ -10,11 +10,12 @@ provider:
       Resource: "arn:aws:s3:::import-products-data-bucket"
     - Effect: Allow
       Action: "s3:*"
-      Resource: "arn:aws:s3:::import-products-data-bucket/*"
+      Resource:
+        - "arn:aws:s3:::import-products-data-bucket/uploaded"
 
 functions:
   importProductsFile:
-    handler: handler.importProductsFile
+    handler: importProductsFile.importProductsFile
     events:
       - http:
           path: import
@@ -24,3 +25,12 @@ functions:
             parameters:
               querystrings:
                 name: true
+  importFileParser:
+    handler: importFileParser.importFileParser
+    events:
+      - s3:
+          bucket: import-products-data-bucket
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+          existing: true
