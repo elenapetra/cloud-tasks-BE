@@ -1,0 +1,43 @@
+openapi: 3.0.0
+info:
+  title: importProductsFile API
+  version: 1.0.0
+  description: API for generating pre-signed URL
+host: "w4j3h23n1m.execute-api.eu-west-1.amazonaws.com"
+basePath: "/dev"
+paths:
+  /import:
+    get:
+      description: Generates a pre-signed URL that allows uploading a file to the specified S3 bucket.
+      parameters:
+        - name: name
+          in: query
+          description: The name of the file to be uploaded to S3
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Successfully generated pre-signed URL
+          schema:
+            type: object
+            properties:
+              url:
+                type: string
+                format: uri
+                description: Pre-signed URL for uploading the file to S3
+        "400":
+          description: Bad request -  Missing required request parameters [name]
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Error message indicating the reason for the bad request
+        "500":
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Error message indicating the internal server error
