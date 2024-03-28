@@ -23,6 +23,9 @@ provider:
       Action: "sns:*"
       Resource:
         Ref: SNSTopic
+    - Effect: Allow
+      Action: "lambda:InvokeFunction"
+      Resource: "arn:aws:lambda:eu-west-1:533267237683:function:product-service-dev-createProduct"
 
   environment:
     PRODUCTS_TABLE: "products-db"

@@ -6,16 +6,15 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.createProduct = async (event) => {
   try {
-    const data = JSON.parse(event.body);
     const productId = generateUniqueId();
 
     const productParams = {
       TableName: process.env.PRODUCTS_TABLE,
       Item: {
         id: productId,
-        title: data.title,
-        description: data.description,
-        price: data.price,
+        title: event.title,
+        description: event.description,
+        price: event.price,
       },
     };
 
@@ -23,7 +22,7 @@ module.exports.createProduct = async (event) => {
       TableName: process.env.STOCKS_TABLE,
       Item: {
         product_id: productId,
-        count: data.count,
+        count: event.count,
       },
     };
 
@@ -35,10 +34,10 @@ module.exports.createProduct = async (event) => {
     const responseData = {
       data: {
         id: productId,
-        title: data.title,
-        description: data.description,
-        price: data.price,
-        count: data.count,
+        title: event.title,
+        description: event.description,
+        price: event.price,
+        count: event.count,
       },
       message: "Product created successfully",
       error: null,
