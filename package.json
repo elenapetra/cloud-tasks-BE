@@ -25,6 +25,7 @@
     "csv-parser": "^2.3.0",
     "fast-csv": "^5.0.1",
     "fs": "^0.0.1-security",
+    "serverless-dotenv-plugin": "^6.0.0",
     "uuid": "^9.0.1"
   }
 }
