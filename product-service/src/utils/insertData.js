@@ -23,9 +23,6 @@ async function pushProductsDataToDynamoDB() {
       };
       await dynamodb.put(params).promise();
     }
-    console.log(
-      "All products inserted into DynamoDB products-db table successfully."
-    );
   } catch (error) {
     console.error(
       "Error inserting products into DynamoDB products-db table:",
@@ -43,9 +40,6 @@ async function pushStocksDataToDynamoDB() {
       };
       await dynamodb.put(params).promise();
     }
-    console.log(
-      "All stocks inserted into DynamoDB stocks-db table successfully."
-    );
   } catch (error) {
     console.error(
       "Error inserting stocks into DynamoDB stocks-db table:",

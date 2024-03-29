@@ -12,17 +12,8 @@ module.exports.catalogBatchProcess = async (event) => {
         FunctionName: "product-service-dev-createProduct",
         Payload: JSON.stringify({ title, description, price, count }),
       };
-      const invokeResponse = await lambda.invoke(params).promise();
 
-      if (invokeResponse.Payload) {
-        console.log(
-          "createProduct Lambda invoked successfully:",
-          invokeResponse.Payload
-        );
-      } else {
-        console.error("Empty response from createProduct Lambda");
-      }
-
+      await lambda.invoke(params).promise();
       await publishEventToSNS(title, description, price, count);
     }
     return { statusCode: 200, body: "Messages consumed successfully" };
@@ -42,7 +33,7 @@ async function publishEventToSNS(title, description, price, count) {
     };
 
     const params = {
-      Subject: "The newly created object",
+      Subject: "The newly created product",
       Message: JSON.stringify(message),
       TopicArn: process.env.SNS_ARN,
     };
