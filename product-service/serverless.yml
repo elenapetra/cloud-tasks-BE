@@ -1,0 +1,102 @@
+service: product-service
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: eu-west-1
+  stage: dev
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource:
+        - "arn:aws:dynamodb:eu-west-1:533267237683:table/products-db"
+        - "arn:aws:dynamodb:eu-west-1:533267237683:table/stocks-db"
+    - Effect: Allow
+      Action: "sqs:*"
+      Resource:
+        - Fn::GetAtt: ["SQSQueue", "Arn"]
+    - Effect: Allow
+      Action: "sns:*"
+      Resource:
+        Ref: SNSTopic
+    - Effect: Allow
+      Action: "lambda:InvokeFunction"
+      Resource: "arn:aws:lambda:eu-west-1:533267237683:function:product-service-dev-createProduct"
+
+  environment:
+    PRODUCTS_TABLE: "products-db"
+    STOCKS_TABLE: "stocks-db"
+    SNS_ARN:
+      Ref: SNSTopic
+
+functions:
+  getProductsList:
+    handler: handlers/getProductsList.getProductsList
+    events:
+      - http:
+          path: products
+          method: get
+          cors: true
+
+  getProductsById:
+    handler: handlers/getProductById.getProductById
+    events:
+      - http:
+          path: products/{productId}
+          method: get
+          request:
+            parameters:
+              paths:
+                productId: true
+
+  createProduct:
+    handler: handlers/createProduct.createProduct
+    events:
+      - http:
+          path: products
+          method: post
+          request:
+            schemas:
+              application/json: ${file(src/schemas/createProductSchema.json)}
+
+  catalogBatchProcess:
+    handler: handlers/catalogBatchProcess.catalogBatchProcess
+    events:
+      - sqs:
+          batchSize: 5
+          arn:
+            Fn::GetAtt: ["SQSQueue", "Arn"]
+
+resources:
+  Resources:
+    SQSQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: catalogItemsQueue
+    SNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: createProductTopic
+    SNSSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: elena_petrasco@epam.com
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic
+
+  Outputs:
+    SQSQueueArn:
+      Value:
+        Fn::GetAtt: [SQSQueue, Arn]
+      Export:
+        Name: SQSQueueArn
+    SQSQueueUrl:
+      Value:
+        Ref: SQSQueue
+      Export:
+        Name: SQSQueueUrl

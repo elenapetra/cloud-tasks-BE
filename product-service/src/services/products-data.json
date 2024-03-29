@@ -1,0 +1,38 @@
+[
+  {
+    "description": "Short Book Description 1",
+    "id": "7567ec4b-b10c-48c5-9345-fc73c48a80aa",
+    "price": 100,
+    "title": "Book 1"
+  },
+  {
+    "description": "Short Book Description 2",
+    "id": "7567ec4b-b10c-48c5-9345-fc73c48a80a1",
+    "price": 150,
+    "title": "Book 2"
+  },
+  {
+    "description": "Short Book Description 3",
+    "id": "7567ec4b-b10c-48c5-9345-fc73c48a80a3",
+    "price": 230,
+    "title": "Book 3"
+  },
+  {
+    "description": "Short Book Description 4",
+    "id": "7567ec4b-b10c-48c5-9345-fc73348a80a1",
+    "price": 50,
+    "title": "Book 4"
+  },
+  {
+    "description": "Short Book Description 5",
+    "id": "7567ec4b-b10c-48c5-9445-fc73c48a80a2",
+    "price": 230,
+    "title": "Book 5"
+  },
+  {
+    "description": "Short Book Description 6",
+    "id": "7567ec4b-b10c-45c5-9345-fc73c48a80a1",
+    "price": 150,
+    "title": "Book 6"
+  }
+]

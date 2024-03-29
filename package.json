@@ -18,5 +18,14 @@
   "bugs": {
     "url": "https://github.com/elenapetra/cloud-tasks-BE/issues"
   },
-  "homepage": "https://github.com/elenapetra/cloud-tasks-BE#readme"
+  "homepage": "https://github.com/elenapetra/cloud-tasks-BE#readme",
+  "dependencies": {
+    "aws-sdk": "^2.1577.0",
+    "crypto": "^1.0.1",
+    "csv-parser": "^2.3.0",
+    "fast-csv": "^5.0.1",
+    "fs": "^0.0.1-security",
+    "serverless-dotenv-plugin": "^6.0.0",
+    "uuid": "^9.0.1"
+  }
 }
