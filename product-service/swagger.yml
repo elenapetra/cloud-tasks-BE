@@ -1,0 +1,145 @@
+openapi: 3.0.0
+info:
+  title: Product API
+  version: 1.0.0
+  description: API for managing products
+servers:
+  - url: https://zq3zdypgs7.execute-api.eu-west-1.amazonaws.com/dev
+    description: Main server (production)
+paths:
+  /products:
+    get:
+      summary: Get all products
+      responses:
+        "200":
+          description: List of products retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    example: "Internal server error"
+    post:
+      summary: Create a new product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewProduct"
+      responses:
+        "201":
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    example: "Invalid request body"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    example: "Internal server error"
+  /products/{productId}:
+    get:
+      summary: Get a single product by ID
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          description: ID of the product to retrieve
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    example: "Product not found"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    example: "Internal server error"
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the product.
+        title:
+          type: string
+          description: The title of the product.
+        description:
+          type: string
+          description: A short description of the product.
+        price:
+          type: integer
+          description: The price of the product.
+        count:
+          type: integer
+          description: The count of the product
+      required:
+        - id
+        - title
+        - description
+        - price
+        - count
+    NewProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The title of the product.
+        description:
+          type: string
+          description: A short description of the product.
+        price:
+          type: integer
+          description: The price of the product.
+        count:
+          type: integer
+          description: The count of the product
+      required:
+        - title
+        - description
+        - price
+        - count
