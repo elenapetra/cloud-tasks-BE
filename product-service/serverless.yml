@@ -18,6 +18,11 @@ provider:
             - "arn:aws:dynamodb:eu-west-1:533267237683:table/products-db"
             - "arn:aws:dynamodb:eu-west-1:533267237683:table/stocks-db"
 
+  environment:
+    REGION: ${self:provider.region}
+    PRODUCTS_TABLE: "products-db"
+    STOCKS_TABLE: "stocks-db"
+
 functions:
   getProductsList:
     handler: handler.getProductsList
@@ -26,11 +31,8 @@ functions:
           path: products
           method: get
           cors: true
-    environment:
-      PRODUCTS_TABLE: "products-db"
-      STOCKS_TABLE: "stocks-db"
 
-  getProductsById:
+  getProductById:
     handler: handler.getProductById
     events:
       - http:
@@ -40,9 +42,7 @@ functions:
             parameters:
               paths:
                 productId: true
-    environment:
-      PRODUCTS_TABLE: "products-db"
-      STOCKS_TABLE: "stocks-db"
+
   createProduct:
     handler: handler.createProduct
     events:
@@ -52,6 +52,3 @@ functions:
           request:
             schemas:
               application/json: ${file(src/schemas/createProductSchema.json)}
-    environment:
-      PRODUCTS_TABLE: "products-db"
-      STOCKS_TABLE: "stocks-db"

@@ -1,7 +1,7 @@
 const AWS = require("aws-sdk");
 const generateUniqueId = require("./src/utils/generateUniqueId");
 
-AWS.config.update({ region: "eu-west-1" });
+AWS.config.update({ region: process.env.REGION });
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.getProductsList = async () => {
@@ -25,16 +25,11 @@ module.exports.getProductsList = async () => {
       );
       return {
         ...product,
-        count: stockInfo ? stockInfo.count : 0,
+        count: stockInfo?.count ?? 0,
       };
     });
     return {
       statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(productsWithStocks),
     };
   } catch (error) {
@@ -122,10 +117,7 @@ module.exports.createProduct = async (event) => {
 
     const responseData = {
       data: {
-        id: productId,
-        title: data.title,
-        description: data.description,
-        price: data.price,
+        ...productParams.Item,
         count: data.count,
       },
       message: "Product created successfully",
