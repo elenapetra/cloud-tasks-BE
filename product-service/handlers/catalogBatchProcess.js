@@ -24,12 +24,7 @@ module.exports.catalogBatchProcess = async (event) => {
 
 async function publishEventToSNS(title, description, price, count) {
   try {
-    const message = {
-      title: title,
-      description: description,
-      price: price,
-      count: count,
-    };
+    const message = { title, description, price, count };
 
     const params = {
       Subject: "The newly created product",
