@@ -13,7 +13,7 @@ module.exports.importProductsFile = async (event) => {
     };
 
     return new Promise((resolve, reject) => {
-      s3.getSignedUrl("putObject", params, (error, url) => {
+      s3.getSignedUrlPromise("putObject", params, (error, url) => {
         if (error) {
           return reject(error);
         }
