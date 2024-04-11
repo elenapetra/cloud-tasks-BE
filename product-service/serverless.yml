@@ -3,9 +3,25 @@ frameworkVersion: "3"
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs16.x
   region: eu-west-1
   stage: dev
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+          Resource:
+            - "arn:aws:dynamodb:eu-west-1:533267237683:table/products-db"
+            - "arn:aws:dynamodb:eu-west-1:533267237683:table/stocks-db"
+
+  environment:
+    REGION: ${self:provider.region}
+    PRODUCTS_TABLE: "products-db"
+    STOCKS_TABLE: "stocks-db"
 
 functions:
   getProductsList:
@@ -16,7 +32,7 @@ functions:
           method: get
           cors: true
 
-  getProductsById:
+  getProductById:
     handler: handler.getProductById
     events:
       - http:
@@ -26,3 +42,13 @@ functions:
             parameters:
               paths:
                 productId: true
+
+  createProduct:
+    handler: handler.createProduct
+    events:
+      - http:
+          path: products
+          method: post
+          request:
+            schemas:
+              application/json: ${file(src/schemas/createProductSchema.json)}
