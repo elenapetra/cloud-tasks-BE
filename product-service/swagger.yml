@@ -99,30 +99,6 @@ paths:
 
 components:
   schemas:
-    Product:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier for the product.
-        title:
-          type: string
-          description: The title of the product.
-        description:
-          type: string
-          description: A short description of the product.
-        price:
-          type: integer
-          description: The price of the product.
-        count:
-          type: integer
-          description: The count of the product
-      required:
-        - id
-        - title
-        - description
-        - price
-        - count
     NewProduct:
       type: object
       properties:
@@ -143,3 +119,17 @@ components:
         - description
         - price
         - count
+    Product:
+      allOf:
+        - $ref: "#/components/schemas/NewProduct"
+        - type: object
+          properties:
+            id:
+              type: string
+              description: The unique identifier for the product. Automatically generated.
+          required:
+            - title
+            - description
+            - price
+            - count
+            - id
